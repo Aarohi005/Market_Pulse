@@ -1,0 +1,55 @@
+version: "3.9"
+
+# ── Services ──────────────────────────────────────────────────────────────────
+
+services:
+  # ── Dashboard + pipeline UI ─────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: financial-news-sentiment:latest
+    container_name: fns-app
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    volumes:
+      # Persist SQLite DB and HuggingFace model cache across container restarts
+      - ./data:/app/data
+    env_file:
+      - .env
+    environment:
+      # Override DB path to point inside the mounted volume
+      DB_PATH: /app/data/news_sentiment.db
+      HF_HOME: /app/data/hf_cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s   # give Streamlit time to start
+
+  # ── Pipeline scheduler (optional, runs daily at 06:00 UTC) ─────────────────
+  # Uncomment to enable automatic daily refresh.
+  # Runs in a separate container so the dashboard stays up during ingestion.
+  #
+  # scheduler:
+  #   image: financial-news-sentiment:latest
+  #   container_name: fns-scheduler
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./data:/app/data
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     DB_PATH: /app/data/news_sentiment.db
+  #     HF_HOME: /app/data/hf_cache
+  #   entrypoint: ["/bin/sh", "-c"]
+  #   command: >
+  #     "while true; do
+  #       python scripts/run_pipeline.py;
+  #       echo 'Pipeline done. Sleeping 24h...';
+  #       sleep 86400;
+  #     done"
+  #   depends_on:
+  #     - app

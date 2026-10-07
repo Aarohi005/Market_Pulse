@@ -1,0 +1,48 @@
+# ── Core ─────────────────────────────────────────────────────────────────────
+pydantic-settings==2.3.4
+pydantic==2.7.4
+
+# ── Ingestion ─────────────────────────────────────────────────────────────────
+newsapi-python==0.2.7
+feedparser==6.0.11
+requests==2.32.3
+tenacity==8.4.1           # retry logic
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+pandas==2.2.2
+numpy==1.26.4
+
+# ── Sentiment ─────────────────────────────────────────────────────────────────
+transformers==4.44.2
+torch==2.3.1              # CPU-only; swap for torch+cu121 for GPU
+# NOTE: FinBERT model is auto-downloaded from HuggingFace Hub on first run
+#       (~440 MB). Set HF_HOME env var to control cache location.
+
+# ── Market data ───────────────────────────────────────────────────────────────
+yfinance==0.2.41
+
+# ── Dashboard ─────────────────────────────────────────────────────────────────
+streamlit==1.37.1
+plotly==5.23.0
+
+# ── Embeddings + vector store ─────────────────────────────────────────────────
+sentence-transformers==3.1.1
+chromadb==0.5.5
+
+# ── LLM providers (install separately — only install the ones you use)
+anthropic==0.34.2
+openai==1.45.0
+# Gemini via LangChain:
+langchain-core==0.3.74
+langchain-google-genai==2.0.10
+
+# ── ML / clustering ───────────────────────────────────────────────────────────
+scikit-learn==1.5.1
+scipy==1.14.1
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest==8.3.2
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dateutil==2.9.0.post0
+pytz==2024.1
